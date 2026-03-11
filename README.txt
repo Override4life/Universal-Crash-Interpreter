@@ -7,7 +7,7 @@ Permission is hereby granted to any person obtaining a copy of this software to 
 RESTRICITONS:
     You may NOT modify, merge, publish, or distribute derivative works of this software.
     You may NOT use this software for commercial purposes.
-    Only the original author ([Your Name]) has the right to modify the source code.
+    Only the original author Bjorn Jonker has the right to modify the source code.
 -------------------------------------------------------------------------------------------------------
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
 
