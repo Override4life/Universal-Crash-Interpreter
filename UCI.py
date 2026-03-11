@@ -69,29 +69,23 @@ def parse_log(file_path):
 
     lang = detect_language(content)
 
-    # 1. Improved Regex for Steps (Traceback)
-    # This now looks for BOTH:
-    # - File "path", line 10 (Python/PHP)
-    # - at path:10:5 (JavaScript)
+    #Traceback
     steps = re.findall(r'(?:File "([^"]+)", line (\d+)|at (?:async )?(.+?):(\d+)(?::\d+)?)', content)
 
     # Clean up the steps (regex findall with multiple groups creates empty strings)
     cleaned_steps = []
     for s in steps:
-        # If Python style, s[0] and s[1] are filled. If JS, s[2] and s[3] are filled.
         f_path = s[0] or s[2]
         l_num = s[1] or s[3]
         cleaned_steps.append((f_path.strip(), l_num))
 
-    # 2. Get the specific crash site (the very first step in a JS log or last in Python)
+    # Get the specific crash site (the very first step in a JS log or last in Python)
     if cleaned_steps:
-        # In JS, the error usually starts at the TOP of the stack.
-        # In Python, it's at the BOTTOM.
         target_file, line = cleaned_steps[0] if lang == "javascript" else cleaned_steps[-1]
     else:
         target_file, line = None, "???"
 
-    # 3. Extract Error Type & Description
+    # Extract Error Type & Description
     error_match = re.search(r"(\w+(?:\s?error|Exception|Error)):? (.+)", content, re.IGNORECASE)
     e_type = error_match.group(1) if error_match else "Unknown Error"
     e_desc = error_match.group(2) if error_match else "No description."
@@ -125,6 +119,7 @@ def print_header():
 
     console.print(Panel(header_text, expand=False))
 
+# Menu
 def print_menu():
     print("\nMenu:")
     print("1. Use UCI-v1.0")
@@ -150,13 +145,12 @@ def main():
             print("\nInvalid choice. Please try again.")
 
         try:
-            # We now get 'steps' back from our parse_log function
             lang, line, e_type, e_desc, target_file, steps = parse_log(log_path)
 
             lang_info = LANG_DATA.get(lang)
             friendly_msg = lang_info["translations"].get(e_type,"I recognize the language, but this specific error is new to my database.")
 
-            # 1. Main Analysis Panel
+            # Main Analysis Panel
             analysis = (
                 f"[bold yellow]Language:[/bold yellow] {lang_info['name']}\n"
                 f"[bold cyan]Crash Site:[/bold cyan] Line {line}\n"
@@ -166,23 +160,33 @@ def main():
             )
             console.print(Panel(analysis, title=f"Analysis: {os.path.basename(log_path)}", border_style=lang_info['color']))
 
-            # 2. The "Path to Destruction" (Traceback)
-            if steps and len(steps) > 1:
+            # The "Path to Destruction" (Smart Slicer)
+            if steps:
                 console.print("\n[bold]🛠️ Traceback (Path leading to the crash):[/bold]")
-                for i, (f_path, l_num) in enumerate(steps):
-                    # We highlight files that look like your personal projects
-                    is_user_file = "Users" in f_path or "Documents" in f_path or "/" in f_path
-                    style = "bold green" if is_user_file else "dim"
-                    console.print(f"  {i + 1}. [{style}]{os.path.basename(f_path)}[/] at line {l_num}")
 
-            # 3. Code Snippet Preview
+                if len(steps) > 10:
+                    f_path, l_num = steps[0]
+                    console.print(f"  1. [dim]{os.path.basename(f_path)}[/] at line {l_num}")
+
+                    console.print(
+                        f"     [bold yellow]... {len(steps) - 6} internal library steps hidden ...[/bold yellow]")
+
+                    for i, (f_path, l_num) in enumerate(steps[-5:], start=len(steps) - 4):
+                        is_user_file = "views.py" in f_path or "/" in f_path
+                        style = "bold green" if is_user_file else "dim"
+                        console.print(f"  {i}. [{style}]{os.path.basename(f_path)}[/] at line {l_num}")
+                else:
+                    for i, (f_path, l_num) in enumerate(steps, 1):
+                        console.print(f"  {i}. [bold green]{os.path.basename(f_path)}[/] at line {l_num}")
+
+            # Code Snippet Preview
             snippet = get_code_snippet(target_file, line)
             if snippet:
                 console.print(f"\n[bold]📍 The broken line in {os.path.basename(target_file)}:[/bold]")
                 syntax = Syntax(snippet, lang, theme="monokai", line_numbers=False)
                 console.print(Panel(syntax, border_style="white", padding=(0, 1)))
 
-            # 4. Final Suggestion
+            # Final Suggestion
             suggestion = lang_info.get("suggestions", {}).get(e_type)
             if suggestion:
                 console.print(f"\n[bold blue]💡 Pro-Tip:[/bold blue] {suggestion}")
