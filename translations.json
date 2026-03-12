@@ -1,0 +1,116 @@
+{
+  "python": {
+    "name": "Python",
+    "color": "blue",
+    "translations": {
+      "NameError": {
+        "desc": "🔍 Unknown variable! Python doesn't recognize this name.",
+        "fix": "💡 Check your spelling or ensure the variable is defined before this line."
+      },
+      "TypeError": {
+        "desc": "🚫 Data type mismatch! You're mixing types (like adding a string to a number).",
+        "fix": "💡 Use int(), str(), or float() to convert data to the correct type."
+      },
+      "IndexError": {
+        "desc": "🔢 List index out of range!",
+        "fix": "💡 The list isn't that long. Check the size using len(your_list)."
+      },
+      "KeyError": {
+        "desc": "🔑 Dictionary key missing!",
+        "fix": "💡 The label you're looking for isn't in the dictionary. Try .get() to avoid crashing."
+      },
+      "IndentationError": {
+        "desc": "📐 Spacing error!",
+        "fix": "💡 Python is picky about tabs/spaces. Ensure your code blocks are aligned."
+      },
+      "ImportError": {
+        "desc": "📦 Module missing!",
+        "fix": "💡 The library is installed, but something is wrong with the file. Try re-installing."
+      },
+      "ModuleNotFoundError": {
+        "desc": "🧩 Package not found!",
+        "fix": "💡 Run 'pip install [package_name]' in your terminal."
+      },
+      "FileNotFoundError": {
+        "desc": "📂 File not found!",
+        "fix": "💡 Check the path. If the file is in a folder, use 'folder/file.txt'."
+      },
+      "AttributeError": {
+        "desc": "🧬 Invalid property!",
+        "fix": "💡 You're trying to use a tool this object doesn't have. Check for typos in method names."
+      },
+      "ZeroDivisionError": {
+        "desc": "➗ Math error!",
+        "fix": "💡 You can't divide by zero. Add an 'if' check to ensure the divisor isn't 0."
+      },
+      "RecursionError": {
+        "desc": "🌀 Infinite Loop!",
+        "fix": "💡 Your function calls itself too much. Add a 'base case' to stop it."
+      },
+      "JSONDecodeError": {
+        "desc": "📝 Corrupt JSON data!",
+        "fix": "💡 Your .json file has a typo, like a missing comma or quote."
+      },
+      "PermissionError": {
+        "desc": "🔒 Access Denied!",
+        "fix": "💡 Close the file in other programs, or run your script as Administrator."
+      }
+    }
+  },
+  "javascript": {
+    "name": "JavaScript (Node.js)",
+    "color": "yellow",
+    "translations": {
+      "ReferenceError": {
+        "desc": "🌐 Unknown variable!",
+        "fix": "💡 Ensure you declared it with 'let', 'const', or 'var' before using it."
+      },
+      "TypeError": {
+        "desc": "🚫 Not a function/object!",
+        "fix": "💡 You're likely calling a method on 'undefined'. Use '?.' (optional chaining)."
+      },
+      "SyntaxError": {
+        "desc": "✍️ Typo alert!",
+        "fix": "💡 Check for missing curly braces {}, parentheses (), or backticks."
+      },
+      "UnhandledPromiseRejection": {
+        "desc": "⏳ Async Failure!",
+        "fix": "💡 Wrap your 'await' code in a try { ... } catch (err) { ... } block."
+      },
+      "ECONNREFUSED": {
+        "desc": "🔌 Connection Refused!",
+        "fix": "💡 The database or server you're trying to reach is offline."
+      },
+      "ENOTFOUND": {
+        "desc": "📡 Server Not Found!",
+        "fix": "💡 Check the URL or API endpoint. Your script can't find that address."
+      },
+      "ETIMEDOUT": {
+        "desc": "⏱️ Connection Timed Out!",
+        "fix": "💡 The server is too slow or your internet dropped. Try increasing the timeout limit."
+      }
+    }
+  },
+  "php": {
+    "name": "PHP",
+    "color": "magenta",
+    "translations": {
+      "Parse error": {
+        "desc": "🐘 Syntax Error!",
+        "fix": "💡 Usually a missing semicolon (;) or a missing curly brace }."
+      },
+      "Fatal error": {
+        "desc": "💀 Script Crashed!",
+        "fix": "💡 A required file is missing or you called a function that doesn't exist."
+      },
+      "Warning": {
+        "desc": "⚠️ Soft Error!",
+        "fix": "💡 The script is running, but a file 'include' failed. Check your file paths."
+      },
+      "PDOException": {
+        "desc": "🗄️ Database Error!",
+        "fix": "💡 Check your DB_HOST, username, and password in your config file."
+      }
+    }
+  }
+}

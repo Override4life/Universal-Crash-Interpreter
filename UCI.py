@@ -2,6 +2,7 @@ import re
 import os
 import sys
 import platform
+import json
 
 from rich.console import Console
 from rich.panel import Panel
@@ -15,40 +16,20 @@ from rich.syntax import Syntax
 
 console = Console()
 
+def load_translations():
+    # Path to your translation file
+    file_path = "translations.json"
+
+    if os.path.exists(file_path):
+        with open(file_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    else:
+        # Fallback if the file is missing
+        print("⚠️ Warning: translations.json not found!")
+        return {}
+
 # --- THE MULTILINGUAL BRAIN ---
-LANG_DATA = {
-    "python": {
-        "name": "Python",
-        "color": "blue",
-        "translations": {
-            "NameError": "🔍 Unknown variable! You're using a name Python doesn't recognize. Check your spelling.",
-            "TypeError": "🚫 Data type mismatch! You're trying to do something with the wrong type of data (like adding a string to a number).",
-            "IndexError": "🔢 List index out of range! You're asking for an item that isn't there.",
-            "KeyError": "🔑 Dictionary key missing! You're looking for a label inside a data object that doesn't exist.",
-            "IndentationError": "📐 Spacing error! Python needs your tabs/spaces to be perfectly aligned."
-        }
-    },
-    "javascript": {
-        "name": "JavaScript (Node.js)",
-        "color": "yellow",
-        "translations": {
-            "ReferenceError": "🌐 JS doesn't know this variable! Did you forget to declare it with 'let' or 'const'?",
-            "TypeError": "🚫 Not a function/object! You're likely trying to use 'null' or 'undefined' as if it were real data.",
-            "SyntaxError": "✍️ Typo alert! Check for missing curly braces {} or parentheses ().",
-            "RangeError": "📏 Out of range! A number is too big or a list is the wrong size."
-        }
-    },
-    "php": {
-        "name": "PHP",
-        "color": "magenta",
-        "translations": {
-            "Parse error": "🐘 PHP Syntax error! Usually a missing semicolon (;) or a bracket.",
-            "Fatal error": "💀 The script crashed completely. Often a missing file or a memory limit.",
-            "Warning": "⚠️ Something is wrong, but the script kept running. Usually a missing 'include' file.",
-            "Notice": "📝 Minor issue. You might be using a variable that hasn't been set yet."
-        }
-    }
-}
+LANG_DATA = load_translations()
 
 
 def detect_language(content):
@@ -148,7 +129,16 @@ def main():
             lang, line, e_type, e_desc, target_file, steps = parse_log(log_path)
 
             lang_info = LANG_DATA.get(lang)
-            friendly_msg = lang_info["translations"].get(e_type,"I recognize the language, but this specific error is new to my database.")
+            error_info = lang_info["translations"].get(e_type, "This is a custom or rare error. Check the technical details above to see what specifically went wrong!")
+
+            if isinstance(error_info, dict):
+                explanation_text = (
+                    f"[bold green]WHAT HAPPENED:[/bold green]\n{error_info.get('desc')}\n\n"
+                    f"[bold blue]HOW TO FIX IT:[/bold blue]\n{error_info.get('fix')}"
+                )
+            else:
+                msg = error_info if error_info else "I don't have a specific explanation for this error yet."
+                explanation_text = f"[bold green]EXPLANATION:[/bold green]\n{msg}"
 
             # Main Analysis Panel
             analysis = (
@@ -156,7 +146,7 @@ def main():
                 f"[bold cyan]Crash Site:[/bold cyan] Line {line}\n"
                 f"[bold red]Technical:[/bold red] {e_type}: {e_desc}\n"
                 f"---"
-                f"\n[bold green]EXPLANATION:[/bold green]\n{friendly_msg}"
+                f"\n{explanation_text}"
             )
             console.print(Panel(analysis, title=f"Analysis: {os.path.basename(log_path)}", border_style=lang_info['color']))
 
