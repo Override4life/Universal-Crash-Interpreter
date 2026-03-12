@@ -7,6 +7,10 @@
         "desc": "🔍 Unknown variable! Python doesn't recognize this name.",
         "fix": "💡 Check your spelling or ensure the variable is defined before this line."
       },
+      "SyntaxError": {
+        "desc": "✍️ Typo alert!",
+        "fix": "💡 Check for missing curly braces {}, parentheses (), or backticks."
+      },
       "TypeError": {
         "desc": "🚫 Data type mismatch! You're mixing types (like adding a string to a number).",
         "fix": "💡 Use int(), str(), or float() to convert data to the correct type."

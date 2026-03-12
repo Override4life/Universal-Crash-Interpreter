@@ -13,3 +13,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
 
 Note:
 Make sure to have downloaded python 3.0 or later before you run this program
+
+How to use:
+1. Analyze Static Log   - Use this for an already existing crash log
+2. Runner Mode          - Use this to debug code
